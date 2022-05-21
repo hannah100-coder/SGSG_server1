@@ -23,22 +23,53 @@ async function insertNewPostImgUrl(connection, insertImgUrlParams) {
 }
 
 
-async function selectAllPosts(connection, userIdx) {
-    const selectAllPostsQuery = `
-        SELECT p.postIdx, c.categoryIdx, c.categoryName, p.title, p.date, i.imgUrlIdx, i.imgUrl
-        FROM Post p
-        JOIN Category c
-        ON p.categoryIdx = c.categoryIdx
-        JOIN ImgUrl i
-        ON p.postIdx = i.postIdx
-        WHERE p.userIdx = ?
-        GROUP BY postIdx
-        ORDER BY p.postIdx DESC;
-    `;
+// async function selectAllPosts(connection, userIdx) {
+//     const selectAllPostsQuery = `
+//         SELECT p.postIdx, c.categoryIdx, c.categoryName, p.title, p.date, i.imgUrlIdx, i.imgUrl
+//         FROM Post p
+//         JOIN Category c
+//         ON p.categoryIdx = c.categoryIdx
+//         JOIN ImgUrl i
+//         ON p.postIdx = i.postIdx
+//         WHERE p.userIdx = ?
+//         GROUP BY postIdx
+//         ORDER BY p.postIdx DESC;
+//     `;
+//
+//     const [selectAllPostsResult] = await connection.query(selectAllPostsQuery, userIdx);
+//     return selectAllPostsResult;
+// }
 
-    const [selectAllPostsResult] = await connection.query(selectAllPostsQuery, userIdx);
-    return selectAllPostsResult;
+//2.4
+async function getTitleList(connection, userIdx) {
+    const getTitleFromPosts = `
+        SELECT title
+        FROM Post
+        WHERE userIdx=?
+        group by title;
+    `;
+    const [names] = await connection.query(getTitleFromPosts, userIdx);
+
+    return names;
 }
+
+async function selectUserPosts(connection, selectUserPostsParams) {
+    const getPostRows = `
+        SELECT p.postIdx,p.title,p.date,p.categoryIdx,c.categoryName,j.imgUrl
+        FROM Post as p
+                 Join Category as c
+                      On p.categoryIdx = c.categoryIdx
+                 Join ImgUrl as j
+                      On p.postIdx = j.postIdx
+        WHERE p.userIdx=? and p.title=?
+        group by postIdx;
+        `;
+
+    const [item] = await connection.query(getPostRows, selectUserPostsParams);
+    console.log("dao_item: ", item);
+    return item;
+}
+
 
 
 async function selectPostsBySameTitle(connection, selectPostsBySameTitleParams) {
@@ -102,9 +133,13 @@ async function selectPostsByCategory(connection, selectPostsByCategoryParams) {
 module.exports = {
     insertNewPost,
     insertNewPostImgUrl,
-    selectAllPosts,
+    //selectAllPosts,
     selectPostsBySameTitle,
     selectEachPost,
     selectEachPostImgUrl,
-    selectPostsByCategory
+    selectPostsByCategory,
+
+    //2.4
+    getTitleList,
+    selectUserPosts
 };

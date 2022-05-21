@@ -2,20 +2,50 @@ const { pool } = require("../../../config/database");
 const { logger } = require("../../../config/winston");
 
 const postDao = require("./postDao");
+const postProvider = require("./postProvider");
 
 // Provider: Read 비즈니스 로직 처리
 
 
+//2.4
+// exports.retrieveAllPosts = async function(userIdx) {
+//     const connection = await pool.getConnection(async (conn) => conn);
+//
+//     const retrieveAllPostsResult = await postDao.selectAllPosts(connection, userIdx);
+//
+//     connection.release();
+//
+//     return retrieveAllPostsResult;
+// }
 
-exports.retrieveAllPosts = async function(userIdx) {
+exports.retrieveTitleList = async function (userIdx) {
     const connection = await pool.getConnection(async (conn) => conn);
-
-    const retrieveAllPostsResult = await postDao.selectAllPosts(connection, userIdx);
-
+    const titleListResult = await postDao.getTitleList(connection, userIdx);
     connection.release();
 
-    return retrieveAllPostsResult;
-}
+    return titleListResult;
+};
+
+exports.retrievePostList = async function (userIdx) {
+    const names = await postProvider.retrieveTitleList(userIdx);
+    console.log("names", names);
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    var postListResult = [];
+
+    for (var i = 0; i < names.length; i++) {
+        const item = await postDao.selectUserPosts(
+            connection,
+            [userIdx,
+            names[i].title]
+        );
+        postListResult.push(item);
+    }
+
+    connection.release();
+    return postListResult;
+};
+
 
 
 exports.retrievePostsBySameTitle = async function(userIdx, title) {
@@ -41,15 +71,43 @@ exports.retrieveEachPost = async function(userIdx, postIdx) {
     return [eachPostResult, eachPostImgResult];
 }
 
-exports.retrievePostsByCategory = async function(userIdx, categoryIdx) {
+// exports.retrievePostsByCategory = async function(userIdx, categoryIdx) {
+//     const connection = await pool.getConnection(async (conn) => conn);
+//
+//     const postsByCategoryResult = await postDao.selectPostsByCategory(connection, [userIdx, categoryIdx]);
+//
+//     connection.release();
+//
+//     return postsByCategoryResult;
+// }
+
+exports.retrieveTitleListByCategory = async function (userIdx, categoryIdx) {
     const connection = await pool.getConnection(async (conn) => conn);
-
-    const postsByCategoryResult = await postDao.selectPostsByCategory(connection, [userIdx, categoryIdx]);
-
+    const titleListByCategoryResult = await postDao.getTitleList(connection, [userIdx, categoryIdx]);
     connection.release();
 
-    return postsByCategoryResult;
-}
+    return titleListByCategoryResult;
+};
+
+exports.retrievePostListByCategory = async function (userIdx, categoryIdx) {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const names = await postProvider.retrieveTitleListByCategory(userIdx, categoryIdx);
+
+    var postListResult = [];
+
+    for (var i = 0; i < names.length; i++) {
+        const item = await postDao.selectUserPosts(
+            connection,
+            [userIdx,
+                names[i].title]
+        );
+        postListResult.push(item);
+    }
+
+    connection.release();
+    return postListResult;
+};
 
 
 

@@ -6,7 +6,8 @@ module.exports = function(app){
     app.post('/app/post/createnewpost', post.postNewPost);
 
     //2.4 전체 게시글 조회 API
-    app.get('/app/post/allposts/:userIdx', post.getAllPosts);
+    //app.get('/app/post/allposts/:userIdx', post.getAllPosts);
+    app.get("/app/posts/:userIdx", post.getPostsByTitle);
 
     //2.5 제목 같은 게시글 조회 - 리스트 API
     app.get('/app/post/sametitleposts/:userIdx', post.getSameTitlePosts);

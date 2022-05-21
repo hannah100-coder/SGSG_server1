@@ -41,14 +41,25 @@ exports.postNewPost = async function (req, res) {
  [GET] /app/post/allposts/:userIdx
  */
 
-exports.getAllPosts = async function (req, res) {
-    const userIdx = req.params.userIdx;
+// exports.getAllPosts = async function (req, res) {
+//     const userIdx = req.params.userIdx;
+//
+//     const allPostsResult = await postProvider.retrieveAllPosts(userIdx);
+//
+//     return res.send(response(baseResponse.SUCCESS, allPostsResult));
+//
+// }
+exports.getPostsByTitle = async function (req, res) {
+    /*
+        params: userIdx
+      */
+        const userIdx = req.params.userIdx;
+        const postListResult = await postProvider.retrievePostList(userIdx);
 
-    const allPostsResult = await postProvider.retrieveAllPosts(userIdx);
+        return res.send(response(baseResponse.SUCCESS, postListResult));
+};
 
-    return res.send(response(baseResponse.SUCCESS, allPostsResult));
 
-}
 
 
 /**
@@ -104,7 +115,8 @@ exports.getPostsByCategory = async function (req, res) {
     const userIdx = req.params.userIdx;
     const categoryIdx = req.params.categoryIdx;
 
-    const postsByCategory = await postProvider.retrievePostsByCategory(userIdx, categoryIdx);
+    //const postsByCategory = await postProvider.retrievePostsByCategory(userIdx, categoryIdx);
+    const postsByCategory = await postProvider.retrievePostListByCategory(userIdx, categoryIdx);
 
     return res.send(response(baseResponse.SUCCESS, postsByCategory));
 }
