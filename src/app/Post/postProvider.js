@@ -83,7 +83,7 @@ exports.retrieveEachPost = async function(userIdx, postIdx) {
 
 exports.retrieveTitleListByCategory = async function (userIdx, categoryIdx) {
     const connection = await pool.getConnection(async (conn) => conn);
-    const titleListByCategoryResult = await postDao.getTitleList(connection, [userIdx, categoryIdx]);
+    const titleListByCategoryResult = await postDao.getTitleListByCategory(connection, [userIdx, categoryIdx]);
     connection.release();
 
     return titleListByCategoryResult;

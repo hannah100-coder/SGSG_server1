@@ -112,14 +112,16 @@ exports.getEachPost = async function (req, res) {
 
 exports.getPostsByCategory = async function (req, res) {
 
-    const userIdx = req.params.userIdx;
-    const categoryIdx = req.params.categoryIdx;
+    const {userIdx, categoryIdx} = req.body;
 
     //const postsByCategory = await postProvider.retrievePostsByCategory(userIdx, categoryIdx);
     const postsByCategory = await postProvider.retrievePostListByCategory(userIdx, categoryIdx);
 
     return res.send(response(baseResponse.SUCCESS, postsByCategory));
 }
+
+
+//=======================
 
 
 exports.postUsers = async function (req, res) {

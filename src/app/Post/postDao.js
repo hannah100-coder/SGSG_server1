@@ -112,6 +112,20 @@ async function selectEachPostImgUrl(connection, selectEachPostImgParams) {
     return selectEachPostResult;
 }
 
+
+async function getTitleListByCategory(connection, userIdx, categoryIdx) {
+    const getTitleFromPosts = `
+        SELECT title
+        FROM Post
+        WHERE userIdx=? and categoryIdx = ?
+        group by title;
+    `;
+    const [names] = await connection.query(getTitleFromPosts, userIdx);
+
+    return names;
+}
+
+
 async function selectPostsByCategory(connection, selectPostsByCategoryParams) {
     const selectPostsByCategoryQuery = `
         SELECT p.postIdx, c.categoryIdx, c.categoryName, p.title, p.date, i.imgUrlIdx, i.imgUrl
@@ -141,5 +155,7 @@ module.exports = {
 
     //2.4
     getTitleList,
-    selectUserPosts
+    selectUserPosts,
+
+    getTitleListByCategory
 };

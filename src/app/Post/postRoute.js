@@ -16,7 +16,7 @@ module.exports = function(app){
     app.get('/app/post/eachpost/:userIdx/:postIdx', post.getEachPost);
 
     //2.7 카테고리별로 게시글 조회 API
-    app.get('/app/post/postsbycategory/:userIdx/:categoryIdx', post.getPostsByCategory);
+    app.get('/app/post/postsbycategory', post.getPostsByCategory);
 
 
     // // 0. 테스트 API
