@@ -11,9 +11,9 @@ const regexEmail = require("regex-email");
  * API Name : 테스트 API
  * [GET] /app/test
  */
-// exports.getTest = async function (req, res) {
-//     return res.send(response(baseResponse.SUCCESS))
-// }
+exports.getTest = async function (req, res) {
+    return res.send(response(baseResponse.SUCCESS))
+}
 
 /**
  * API No. 1
@@ -23,27 +23,35 @@ const regexEmail = require("regex-email");
 exports.postUsers = async function (req, res) {
 
     /**
-     * Body: email, password, nickname
+     * Body: name, id, password
      */
-    const {email, password, nickname} = req.body;
+    const { name, id, password } = req.body;
 
     // 빈 값 체크
-    if (!email)
-        return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY));
+    if (!id)
+        return res.send(response(baseResponse.SIGNUP_ID_EMPTY));
+    else if (!name)
+        return res.send(response(baseResponse.SIGNUP_NAME_EMPTY));
+    else if (!password)
+        return res.send(response(baseResponse.SIGNUP_PASSWORD_EMPTY));
 
     // 길이 체크
-    if (email.length > 30)
-        return res.send(response(baseResponse.SIGNUP_EMAIL_LENGTH));
+    if (id.length > 20)
+        return res.send(response(baseResponse.SIGNUP_ID_LENGTH));
+    else if (name.length > 30)
+        return res.send(response(baseResponse.SIGNUP_NAME_LENGTH));
+    else if (password.length > 100)
+        return res.send(response(baseResponse.SIGNUP_PASSWORD_LENGTH));
 
     // 형식 체크 (by 정규표현식)
-    if (!regexEmail.test(email))
-        return res.send(response(baseResponse.SIGNUP_EMAIL_ERROR_TYPE));
+    //if (!regexEmail.test(email))
+    //    return res.send(response(baseResponse.SIGNUP_EMAIL_ERROR_TYPE));
 
     // createUser 함수 실행을 통한 결과 값을 signUpResponse에 저장
     const signUpResponse = await userService.createUser(
-        email,
-        password,
-        nickname
+        name,
+        id,
+        password
     );
 
     // signUpResponse 값을 json으로 전달
@@ -99,13 +107,13 @@ exports.getUserById = async function (req, res) {
  * API No. 4
  * API Name : 로그인 API
  * [POST] /app/login
- * body : email, passsword
+ * body : id, passsword
  */
 exports.login = async function (req, res) {
 
-    const {email, password} = req.body;
+    const {id, password} = req.body;
 
-    const signInResponse = await userService.postSignIn(email, password);
+    const signInResponse = await userService.postSignIn(id, password);
 
     return res.send(signInResponse);
 };

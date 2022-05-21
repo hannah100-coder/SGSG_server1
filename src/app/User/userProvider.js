@@ -52,14 +52,33 @@ exports.passwordCheck = async function (selectUserPasswordParams) {
       connection,
       selectUserPasswordParams
   );
+
   connection.release();
-  return passwordCheckResult[0];
+  return passwordCheckResult;
 };
 
-exports.accountCheck = async function (email) {
+exports.accountCheck = async function (id) {
   const connection = await pool.getConnection(async (conn) => conn);
-  const userAccountResult = await userDao.selectUserAccount(connection, email);
+  const userAccountResult = await userDao.selectUserAccount(connection, id);
   connection.release();
 
   return userAccountResult;
 };
+
+// ID 중복 확인
+exports.checkId = async function (id) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const idCheckResult = await userDao.selectUserAccountId(connection, id);
+  connection.release();
+
+  return idCheckResult;
+}
+
+// userIdx로 유저 존재 여부 확인
+exports.userExist = async function (userIdx) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const userExistResult = await userDao.selectUserExist(connection, userIdx);
+  connection.release();
+
+  return userExistResult;
+}
