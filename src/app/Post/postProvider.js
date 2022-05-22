@@ -68,7 +68,7 @@ exports.retrieveEachPost = async function(userIdx, postIdx) {
 
     connection.release();
 
-    return [eachPostResult, eachPostImgResult];
+    return {eachPostResult, eachPostImgResult}
 }
 
 // exports.retrievePostsByCategory = async function(userIdx, categoryIdx) {

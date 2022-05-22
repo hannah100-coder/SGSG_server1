@@ -62,7 +62,7 @@ async function selectUserPosts(connection, selectUserPostsParams) {
                  Join ImgUrl as j
                       On p.postIdx = j.postIdx
         WHERE p.userIdx=? and p.title=?
-        group by postIdx;
+        group by p.postIdx;
         `;
 
     const [item] = await connection.query(getPostRows, selectUserPostsParams);

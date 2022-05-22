@@ -75,7 +75,8 @@ exports.getSameTitlePosts = async function (req, res) {
      */
 
     const userIdx = req.params.userIdx;
-    const title = req.body.title;
+    const title = req.query.title;
+
 
     if(!userIdx)
         return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));
